@@ -31,7 +31,7 @@ export default function ProductCarousel({ products, category }: ProductCarouselP
     const body = encodeURIComponent(
       `I would like to request a quote for ${productName}.\n\nPlease provide details on pricing and specifications.\n\nThank you.`,
     )
-    window.location.href = `mailto:info@riyanshienterprises.com?subject=${subject}&body=${body}`
+    window.location.href = `mailto:riyanshienterprises13@gmail.com?subject=${subject}&body=${body}`
   }
 
   const handleMouseDown = (e: React.MouseEvent) => {

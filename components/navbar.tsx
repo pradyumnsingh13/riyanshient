@@ -1,78 +1,78 @@
 "use client"
 
-import type React from "react"
-
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Search, Menu, X } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { cn } from "@/lib/utils"
+import { Search, Menu, X, ChevronDown } from "lucide-react"
 
+// Product categories for dropdown menus
 const productCategories = {
   conveyors: [
-    "loading-conveyor",
-    "slat-conveyor",
-    "bend-conveyor",
-    "packing-conveyor",
-    "visual-inspection-conveyor",
-    "roller-conveyor",
-    "elevator-conveyor",
-    "material-transfer-conveyor",
+    { name: "Loading Conveyor", id: "loading-conveyor" },
+    { name: "Slat Conveyor", id: "slat-conveyor" },
+    { name: "Bend Conveyor", id: "bend-conveyor" },
+    { name: "Packing Conveyor", id: "packing-conveyor" },
+    { name: "Visual Inspection Conveyor", id: "visual-inspection-conveyor" },
+    { name: "Roller Conveyor", id: "roller-conveyor" },
+    { name: "Elevator Conveyor", id: "elevator-conveyor" },
+    { name: "Material Transfer Conveyor", id: "material-transfer-conveyor" },
   ],
   furniture: [
-    "cross-over-bench",
-    "ss-locker",
-    "ms-locker",
-    "apron-locker",
-    "book-almirah",
-    "computer-table",
-    "powder-sampler",
-    "step-ladder",
-    "sink-table",
-    "almirah",
-    "chair",
-    "diepunch-cabinet",
-    "dustbin",
-    "ipc",
-    "mug",
-    "pallet",
-    "petri-stand",
-    "scoop",
-    "sop-stand",
-    "spatulla",
-    "ss-ms-pallet-truck",
-    "ss-container",
-    "stool",
-    "table",
-    "toolbox",
-    "tray",
-    "ampoules-tray",
-    "wallguard",
-    "stirir",
+    { name: "Crossover Bench", id: "crossover-bench" },
+    { name: "SS Locker", id: "ss-locker" },
+    { name: "MS Locker", id: "ms-locker" },
+    { name: "Apron Locker", id: "apron-locker" },
+    { name: "Document Almirah", id: "book-almirah" },
+    { name: "Computer Table", id: "computer-table" },
+    { name: "Powder Sampler", id: "powder-sampler" },
+    { name: "Step Ladder", id: "step-ladder" },
+    { name: "Sink Table", id: "sink-table" },
+    { name: "Storage Solutions", id: "storage-solutions" },
+    { name: "Almirah", id: "almirah" },
+    { name: "Chair", id: "chair" },
+    { name: "DiePunch Cabinet", id: "diepunchcabinet" },
+    { name: "Food Operated Dustbin", id: "dustbin" },
+    { name: "IPC bin", id: "IPC" },
+    { name: "Marking Mug", id: "mug" },
+    { name: "Pallet", id: "pallet" },
+    { name: "Petri Stand", id: "petristand" },
+    { name: "Movable Step Ladder", id: "platformtrolley" },
+    { name: "Scoop", id: "scoop" },
+    { name: "SOP Stand", id: "sopstand" },
+    { name: "Stainless Steel Spatulla", id: "spatulla" },
+    { name: "SS & MS Pallet Truck", id: "ss&mspallettruck" },
+    { name: "SS Container", id: "sscontainer" },
+    { name: "Stool", id: "stool" },
+    { name: "Table", id: "table" },
+    { name: "Tool box", id: "toolbox" },
+    { name: "Tray", id: "tray" },
+    { name: "Ampoules Tray", id: "ampoulestray" },
+    { name: "Wall Guard", id: "wallguard" },
+    { name: "GMP Model Stirrer", id: "stirir" },
   ],
-  racking: ["pallet-racking", "cantilever-racking", "mezzazine-racking"],
-  trolleys: ["utility-trolleys", "material-handling-trolleys", "clean-room-trolleys"],
+  racking: [
+    { name: "Pallet Racking", id: "pallet-racking" },
+    { name: "Cantilever Racking", id: "cantilever-racking" },
+    { name: "Mezzanine Racking", id: "mezzanine-racking" },
+  ],
+  trolleys: [
+    { name: "Utility Trolleys", id: "utility-trolleys" },
+    { name: "Material Handling Trolleys", id: "material-handling-trolleys" },
+    { name: "Clean Room Trolleys", id: "clean-room-trolleys" },
+  ],
 }
 
-const formatName = (name: string) => {
-  return name
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ")
-}
-
-export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false)
+export default function MainNav() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
-  const [searchResults, setSearchResults] = useState<string[]>([])
+  const [searchResults, setSearchResults] = useState<Array<{ name: string; category: string; id: string }>>([])
   const [showDropdown, setShowDropdown] = useState<string | null>(null)
-  const router = useRouter()
 
+  // Combine all products for search
   const allProducts = [
-    ...productCategories.conveyors.map((item) => ({ name: item, category: "conveyors" })),
-    ...productCategories.furniture.map((item) => ({ name: item, category: "furniture" })),
-    ...productCategories.racking.map((item) => ({ name: item, category: "racking" })),
-    ...productCategories.trolleys.map((item) => ({ name: item, category: "trolleys" })),
+    ...productCategories.conveyors.map((item) => ({ ...item, category: "conveyors" })),
+    ...productCategories.furniture.map((item) => ({ ...item, category: "furniture" })),
+    ...productCategories.racking.map((item) => ({ ...item, category: "racking" })),
+    ...productCategories.trolleys.map((item) => ({ ...item, category: "trolleys" })),
   ]
 
   const handleSearch = () => {
@@ -81,49 +81,41 @@ export default function Navbar() {
       return
     }
 
-    const results = allProducts
-      .filter((product) => formatName(product.name).toLowerCase().includes(searchQuery.toLowerCase()))
-      .map((product) => `${product.category}/${product.name}`)
+    const query = searchQuery.toLowerCase()
+    const results = allProducts.filter((product) => product.name.toLowerCase().includes(query))
 
     setSearchResults(results)
   }
 
-  const handleSearchItemClick = (path: string) => {
-    router.push(`#${path}`)
+  const handleSearchItemClick = (category: string, id: string) => {
+    window.location.href = `/${category}#${id}`
     setSearchQuery("")
     setSearchResults([])
+    setIsMenuOpen(false)
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleSearch()
-    }
-  }
-
+  // Search when query changes
   useEffect(() => {
-    if (searchQuery) {
-      handleSearch()
-    } else {
-      setSearchResults([])
-    }
+    handleSearch()
   }, [searchQuery])
 
   return (
-    <nav className="bg-white shadow-md sticky top-0 z-50">
-      <div className="container mx-auto px-1 ">
+    <header className="bg-white shadow-sm sticky top-0 z-50">
+      <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
-            <Link href="/" className="flex-shrink-0">
-              <h1 className="text-xl font-bold">Riyanshi Enterprises</h1>
+          {/* Logo - fixed width to prevent collapsing */}
+          <div className="flex-shrink-0 w-48 md:w-auto mr-2">
+            <Link href="/" className="font-bold text-lg md:text-xl truncate block">
+              Riyanshi Enterprises
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Link href="#home" className="px-1 py-2 hover:text-primary">
+          <nav className="hidden lg:flex items-center space-x-4 flex-grow justify-center">
+            <Link href="#home" className="px-2 py-2 hover:text-gray-900 font-medium">
               Home
             </Link>
-            <Link href="#about" className="px-3 py-2 hover:text-primary">
+            <Link href="#about" className="px-2 py-2 hover:text-gray-900 font-medium">
               About
             </Link>
 
@@ -132,14 +124,15 @@ export default function Navbar() {
               onMouseEnter={() => setShowDropdown("conveyors")}
               onMouseLeave={() => setShowDropdown(null)}
             >
-              <Link href="#conveyors" className="px-3 py-2 hover:text-primary">
+              <button className="flex items-center px-2 py-2 hover:text-gray-900 font-medium">
                 Conveyors
-              </Link>
+                <ChevronDown className="ml-1 h-4 w-4" />
+              </button>
               {showDropdown === "conveyors" && (
-                <div className="absolute left-0 mt-2 w-64 bg-white shadow-lg rounded-md py-2 z-10">
+                <div className="absolute left-0 mt-1 w-64 bg-white shadow-lg rounded-md py-2 z-10 max-h-96 overflow-y-auto">
                   {productCategories.conveyors.map((item) => (
-                    <Link key={item} href={`#conveyors/${item}`} className="block px-4 py-2 hover:bg-gray-100">
-                      {formatName(item)}
+                    <Link key={item.id} href={`/conveyors#${item.id}`} className="block px-4 py-2 hover:bg-gray-100">
+                      {item.name}
                     </Link>
                   ))}
                 </div>
@@ -151,14 +144,15 @@ export default function Navbar() {
               onMouseEnter={() => setShowDropdown("furniture")}
               onMouseLeave={() => setShowDropdown(null)}
             >
-              <Link href="#furniture" className="px-3 py-2 hover:text-primary">
+              <button className="flex items-center px-2 py-2 hover:text-gray-900 font-medium">
                 Furniture Items
-              </Link>
+                <ChevronDown className="ml-1 h-4 w-4" />
+              </button>
               {showDropdown === "furniture" && (
-                <div className="absolute left-0 mt-2 w-64 bg-white shadow-lg rounded-md py-2 z-10 max-h-96 overflow-y-auto">
+                <div className="absolute left-0 mt-1 w-64 bg-white shadow-lg rounded-md py-2 z-10 max-h-96 overflow-y-auto">
                   {productCategories.furniture.map((item) => (
-                    <Link key={item} href={`#furniture/${item}`} className="block px-4 py-2 hover:bg-gray-100">
-                      {formatName(item)}
+                    <Link key={item.id} href={`/furniture#${item.id}`} className="block px-4 py-2 hover:bg-gray-100">
+                      {item.name}
                     </Link>
                   ))}
                 </div>
@@ -170,14 +164,15 @@ export default function Navbar() {
               onMouseEnter={() => setShowDropdown("racking")}
               onMouseLeave={() => setShowDropdown(null)}
             >
-              <Link href="#racking" className="px-3 py-2 hover:text-primary">
-                Racking
-              </Link>
+              <button className="flex items-center px-2 py-2 hover:text-gray-900 font-medium">
+                MS Racking
+                <ChevronDown className="ml-1 h-4 w-4" />
+              </button>
               {showDropdown === "racking" && (
-                <div className="absolute left-0 mt-2 w-64 bg-white shadow-lg rounded-md py-2 z-10">
+                <div className="absolute left-0 mt-1 w-64 bg-white shadow-lg rounded-md py-2 z-10">
                   {productCategories.racking.map((item) => (
-                    <Link key={item} href={`#racking/${item}`} className="block px-4 py-2 hover:bg-gray-100">
-                      {formatName(item)}
+                    <Link key={item.id} href={`/racking#${item.id}`} className="block px-4 py-2 hover:bg-gray-100">
+                      {item.name}
                     </Link>
                   ))}
                 </div>
@@ -189,28 +184,33 @@ export default function Navbar() {
               onMouseEnter={() => setShowDropdown("trolleys")}
               onMouseLeave={() => setShowDropdown(null)}
             >
-              <Link href="#trolleys" className="px-3 py-2 hover:text-primary">
+              <button className="flex items-center px-2 py-2 hover:text-gray-900 font-medium">
                 Trolleys
-              </Link>
+                <ChevronDown className="ml-1 h-4 w-4" />
+              </button>
               {showDropdown === "trolleys" && (
-                <div className="absolute left-0 mt-2 w-64 bg-white shadow-lg rounded-md py-2 z-10">
+                <div className="absolute left-0 mt-1 w-64 bg-white shadow-lg rounded-md py-2 z-10">
                   {productCategories.trolleys.map((item) => (
-                    <Link key={item} href={`#trolleys/${item}`} className="block px-4 py-2 hover:bg-gray-100">
-                      {formatName(item)}
+                    <Link key={item.id} href={`/trolleys#${item.id}`} className="block px-4 py-2 hover:bg-gray-100">
+                      {item.name}
                     </Link>
                   ))}
                 </div>
               )}
             </div>
 
-            <Link href="#clients" className="px-3 py-2 hover:text-primary">
+            <Link href="#clients" className="px-2 py-2 hover:text-gray-900 font-medium">
               Clients
             </Link>
-            <Link href="#contact" className="px-3 py-2 hover:text-primary">
+            <Link href="#contact" className="px-2 py-2 hover:text-gray-900 font-medium">
               Contact Us
             </Link>
+          </nav>
 
-            <div className="relative ml-4">
+          {/* Search and Mobile Menu Button */}
+          <div className="flex items-center ml-auto">
+            {/* Desktop Search */}
+            <div className="hidden lg:flex relative">
               <div className="flex items-center border rounded-full px-3 py-1">
                 <input
                   type="text"
@@ -218,181 +218,169 @@ export default function Navbar() {
                   className="outline-none w-40"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={handleKeyDown}
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                 />
                 <Search className="h-5 w-5 text-gray-400 cursor-pointer" onClick={handleSearch} />
               </div>
 
               {searchResults.length > 0 && (
                 <div className="absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-md py-2 z-10 max-h-96 overflow-y-auto">
-                  {searchResults.map((result) => (
+                  {searchResults.map((result, index) => (
                     <button
-                      key={result}
-                      onClick={() => handleSearchItemClick(result)}
+                      key={index}
+                      onClick={() => handleSearchItemClick(result.category, result.id)}
                       className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                     >
-                      {formatName(result.split("/")[1])}
+                      <span className="font-medium">{result.name}</span>
+                      <span className="text-sm text-gray-500 block capitalize">{result.category}</span>
                     </button>
                   ))}
                 </div>
               )}
             </div>
-          </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
-            <div className="relative mr-4">
+            {/* Mobile Search */}
+            <div className="lg:hidden relative mr-2">
               <div className="flex items-center border rounded-full px-3 py-1">
                 <input
                   type="text"
-                  placeholder="Search..."
-                  className="outline-none w-32"
+                  placeholder="Search"
+                  className="outline-none w-20 text-sm"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={handleKeyDown}
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                 />
-                <Search className="h-5 w-5 text-gray-400 cursor-pointer" onClick={handleSearch} />
+                <Search className="h-4 w-4 text-gray-400 cursor-pointer" onClick={handleSearch} />
               </div>
 
               {searchResults.length > 0 && (
                 <div className="absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-md py-2 z-10 max-h-96 overflow-y-auto">
-                  {searchResults.map((result) => (
+                  {searchResults.map((result, index) => (
                     <button
-                      key={result}
-                      onClick={() => handleSearchItemClick(result)}
+                      key={index}
+                      onClick={() => handleSearchItemClick(result.category, result.id)}
                       className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                     >
-                      {formatName(result.split("/")[1])}
+                      <span className="font-medium">{result.name}</span>
+                      <span className="text-sm text-gray-500 block capitalize">{result.category}</span>
                     </button>
                   ))}
                 </div>
               )}
             </div>
 
+            {/* Mobile menu button */}
             <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-primary focus:outline-none"
+              className="lg:hidden p-2 rounded-md text-gray-700 hover:text-gray-900 focus:outline-none"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              <span className="sr-only">Toggle menu</span>
             </button>
           </div>
         </div>
+
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <div className="lg:hidden py-4 border-t">
+            <nav className="flex flex-col space-y-2">
+              <Link
+                href="#home"
+                className="px-3 py-2 hover:bg-gray-100 rounded-md"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Home
+              </Link>
+              <Link
+                href="#about"
+                className="px-3 py-2 hover:bg-gray-100 rounded-md"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                About
+              </Link>
+
+              <div className="space-y-1">
+                <div className="font-medium px-3 py-2">Conveyors</div>
+                <div className="pl-4 space-y-1 max-h-40 overflow-y-auto">
+                  {productCategories.conveyors.map((item) => (
+                    <Link
+                      key={item.id}
+                      href={`/conveyors#${item.id}`}
+                      className="block px-3 py-1 text-sm hover:bg-gray-100 rounded-md"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <div className="font-medium px-3 py-2">Furniture Items</div>
+                <div className="pl-4 space-y-1 max-h-40 overflow-y-auto">
+                  {productCategories.furniture.map((item) => (
+                    <Link
+                      key={item.id}
+                      href={`/furniture#${item.id}`}
+                      className="block px-3 py-1 text-sm hover:bg-gray-100 rounded-md"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <div className="font-medium px-3 py-2">MS Racking</div>
+                <div className="pl-4 space-y-1">
+                  {productCategories.racking.map((item) => (
+                    <Link
+                      key={item.id}
+                      href={`/racking#${item.id}`}
+                      className="block px-3 py-1 text-sm hover:bg-gray-100 rounded-md"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <div className="font-medium px-3 py-2">Trolleys</div>
+                <div className="pl-4 space-y-1">
+                  {productCategories.trolleys.map((item) => (
+                    <Link
+                      key={item.id}
+                      href={`/trolleys#${item.id}`}
+                      className="block px-3 py-1 text-sm hover:bg-gray-100 rounded-md"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              <Link
+                href="#clients"
+                className="px-3 py-2 hover:bg-gray-100 rounded-md"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Clients
+              </Link>
+              <Link
+                href="#contact"
+                className="px-3 py-2 hover:bg-gray-100 rounded-md"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Contact Us
+              </Link>
+            </nav>
+          </div>
+        )}
       </div>
-
-      {/* Mobile menu */}
-      <div className={cn("md:hidden", isOpen ? "block" : "hidden")}>
-        <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-          <Link href="#home" className="block px-3 py-2 hover:bg-gray-100 rounded-md" onClick={() => setIsOpen(false)}>
-            Home
-          </Link>
-          <Link href="#about" className="block px-3 py-2 hover:bg-gray-100 rounded-md" onClick={() => setIsOpen(false)}>
-            About
-          </Link>
-
-          <div className="relative">
-            <Link
-              href="#conveyors"
-              className="block px-3 py-2 hover:bg-gray-100 rounded-md"
-              onClick={() => setIsOpen(false)}
-            >
-              Conveyors
-            </Link>
-            <div className="pl-6 space-y-1">
-              {productCategories.conveyors.map((item) => (
-                <Link
-                  key={item}
-                  href={`#conveyors/${item}`}
-                  className="block px-3 py-1 text-sm hover:bg-gray-100 rounded-md"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {formatName(item)}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          <div className="relative">
-            <Link
-              href="#furniture"
-              className="block px-3 py-2 hover:bg-gray-100 rounded-md"
-              onClick={() => setIsOpen(false)}
-            >
-              Furniture Items
-            </Link>
-            <div className="pl-6 space-y-1">
-              {productCategories.furniture.map((item) => (
-                <Link
-                  key={item}
-                  href={`#furniture/${item}`}
-                  className="block px-3 py-1 text-sm hover:bg-gray-100 rounded-md"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {formatName(item)}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          <div className="relative">
-            <Link
-              href="#racking"
-              className="block px-3 py-2 hover:bg-gray-100 rounded-md"
-              onClick={() => setIsOpen(false)}
-            >
-              Racking
-            </Link>
-            <div className="pl-6 space-y-1">
-              {productCategories.racking.map((item) => (
-                <Link
-                  key={item}
-                  href={`#racking/${item}`}
-                  className="block px-3 py-1 text-sm hover:bg-gray-100 rounded-md"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {formatName(item)}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          <div className="relative">
-            <Link
-              href="#trolleys"
-              className="block px-3 py-2 hover:bg-gray-100 rounded-md"
-              onClick={() => setIsOpen(false)}
-            >
-              Trolleys
-            </Link>
-            <div className="pl-6 space-y-1">
-              {productCategories.trolleys.map((item) => (
-                <Link
-                  key={item}
-                  href={`#trolleys/${item}`}
-                  className="block px-3 py-1 text-sm hover:bg-gray-100 rounded-md"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {formatName(item)}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          <Link
-            href="#clients"
-            className="block px-3 py-2 hover:bg-gray-100 rounded-md"
-            onClick={() => setIsOpen(false)}
-          >
-            Clients
-          </Link>
-          <Link
-            href="#contact"
-            className="block px-3 py-2 hover:bg-gray-100 rounded-md"
-            onClick={() => setIsOpen(false)}
-          >
-            Contact Us
-          </Link>
-        </div>
-      </div>
-    </nav>
+    </header>
   )
 }
