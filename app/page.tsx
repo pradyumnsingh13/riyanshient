@@ -4,6 +4,7 @@ import Navbar from "@/components/navbar"
 import HomeSection from "@/components/home-section"
 import AboutSection from "@/components/about-section"
 import ConveyorsSection from "@/components/conveyors-section"
+
 import FurnitureSection from "@/components/furniture-section"
 import RackingSection from "@/components/racking-section"
 import TrolleysSection from "@/components/trolleys-section"

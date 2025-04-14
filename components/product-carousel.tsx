@@ -107,6 +107,28 @@ export default function ProductCarousel({ products, category }: ProductCarouselP
     }
   }, [activeIndex])
 
+  // Check if we need to scroll to a specific item on load (for hash navigation)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const hash = window.location.hash
+      if (hash) {
+        // Format: #category-productId
+        const hashParts = hash.substring(1).split("-")
+        if (hashParts.length > 1 && hashParts[0] === category) {
+          const productId = hashParts[1]
+          const productIndex = products.findIndex((product) => product.id === productId)
+
+          if (productIndex !== -1) {
+            // Wait a bit for the carousel to initialize
+            setTimeout(() => {
+              scrollToIndex(productIndex)
+            }, 300)
+          }
+        }
+      }
+    }
+  }, [products, category])
+
   return (
     <div className="relative">
       <div
@@ -125,7 +147,7 @@ export default function ProductCarousel({ products, category }: ProductCarouselP
           <div
             key={product.id}
             className="carousel-item flex-shrink-0 w-full md:w-1/2 lg:w-1/3 snap-center p-4"
-            id={`${category}/${product.id}`}
+            id={`${category}-${product.id}`}
           >
             <div className="bg-white rounded-lg shadow-lg overflow-hidden h-full flex flex-col">
               <div className="relative h-64">

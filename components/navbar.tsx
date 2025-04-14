@@ -17,42 +17,40 @@ const productCategories = {
     { name: "Material Transfer Conveyor", id: "material-transfer-conveyor" },
   ],
   furniture: [
-    { name: "Crossover Bench", id: "crossover-bench" },
+    { name: "Cross Over Bench", id: "cross-over-bench" },
     { name: "SS Locker", id: "ss-locker" },
     { name: "MS Locker", id: "ms-locker" },
     { name: "Apron Locker", id: "apron-locker" },
-    { name: "Document Almirah", id: "book-almirah" },
+    { name: "Book Almirah", id: "book-almirah" },
     { name: "Computer Table", id: "computer-table" },
     { name: "Powder Sampler", id: "powder-sampler" },
     { name: "Step Ladder", id: "step-ladder" },
     { name: "Sink Table", id: "sink-table" },
-    { name: "Storage Solutions", id: "storage-solutions" },
     { name: "Almirah", id: "almirah" },
     { name: "Chair", id: "chair" },
-    { name: "DiePunch Cabinet", id: "diepunchcabinet" },
-    { name: "Food Operated Dustbin", id: "dustbin" },
-    { name: "IPC bin", id: "IPC" },
-    { name: "Marking Mug", id: "mug" },
+    { name: "Diepunch Cabinet", id: "diepunch-cabinet" },
+    { name: "Dustbin", id: "dustbin" },
+    { name: "IPC", id: "ipc" },
+    { name: "Mug", id: "mug" },
     { name: "Pallet", id: "pallet" },
-    { name: "Petri Stand", id: "petristand" },
-    { name: "Movable Step Ladder", id: "platformtrolley" },
+    { name: "Petri Stand", id: "petri-stand" },
     { name: "Scoop", id: "scoop" },
-    { name: "SOP Stand", id: "sopstand" },
-    { name: "Stainless Steel Spatulla", id: "spatulla" },
-    { name: "SS & MS Pallet Truck", id: "ss&mspallettruck" },
-    { name: "SS Container", id: "sscontainer" },
+    { name: "SOP Stand", id: "sop-stand" },
+    { name: "Spatulla", id: "spatulla" },
+    { name: "SS & MS Pallet Truck", id: "ss-ms-pallet-truck" },
+    { name: "SS Container", id: "ss-container" },
     { name: "Stool", id: "stool" },
     { name: "Table", id: "table" },
-    { name: "Tool box", id: "toolbox" },
+    { name: "Toolbox", id: "toolbox" },
     { name: "Tray", id: "tray" },
-    { name: "Ampoules Tray", id: "ampoulestray" },
-    { name: "Wall Guard", id: "wallguard" },
-    { name: "GMP Model Stirrer", id: "stirir" },
+    { name: "Ampoules Tray", id: "ampoules-tray" },
+    { name: "Wallguard", id: "wallguard" },
+    { name: "Stirir", id: "stirir" },
   ],
   racking: [
     { name: "Pallet Racking", id: "pallet-racking" },
     { name: "Cantilever Racking", id: "cantilever-racking" },
-    { name: "Mezzanine Racking", id: "mezzanine-racking" },
+    { name: "Mezzazine Racking", id: "mezzazine-racking" },
   ],
   trolleys: [
     { name: "Utility Trolleys", id: "utility-trolleys" },
@@ -88,11 +86,42 @@ export default function MainNav() {
   }
 
   const handleSearchItemClick = (category: string, id: string) => {
-    window.location.href = `/${category}#${id}`
+    // Navigate to the section and product on the main page
+    window.location.href = `/#${category}-${id}`
     setSearchQuery("")
     setSearchResults([])
     setIsMenuOpen(false)
   }
+
+  // Smooth scroll to section when hash changes
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash
+      if (hash) {
+        // Remove the # character
+        const targetId = hash.substring(1)
+
+        // Give time for the DOM to render
+        setTimeout(() => {
+          const targetElement = document.getElementById(targetId)
+          if (targetElement) {
+            targetElement.scrollIntoView({ behavior: "smooth" })
+          }
+        }, 100)
+      }
+    }
+
+    // Handle hash on initial load
+    handleHashChange()
+
+    // Add event listener for hash changes
+    window.addEventListener("hashchange", handleHashChange)
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange)
+    }
+  }, [])
 
   // Search when query changes
   useEffect(() => {
@@ -102,9 +131,9 @@ export default function MainNav() {
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo - fixed width to prevent collapsing */}
-          <div className="flex-shrink-0 w-48 md:w-auto mr-2">
+        <div className="flex items-center h-16">
+          {/* Logo - reduced width on mobile */}
+          <div className="flex-shrink-0 w-auto max-w-[140px] sm:max-w-none mr-2">
             <Link href="/" className="font-bold text-lg md:text-xl truncate block">
               Riyanshi Enterprises
             </Link>
@@ -112,10 +141,10 @@ export default function MainNav() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-4 flex-grow justify-center">
-            <Link href="#home" className="px-2 py-2 hover:text-gray-900 font-medium">
+            <Link href="/#home" className="px-2 py-2 hover:text-gray-900 font-medium">
               Home
             </Link>
-            <Link href="#about" className="px-2 py-2 hover:text-gray-900 font-medium">
+            <Link href="/#about" className="px-2 py-2 hover:text-gray-900 font-medium">
               About
             </Link>
 
@@ -131,7 +160,12 @@ export default function MainNav() {
               {showDropdown === "conveyors" && (
                 <div className="absolute left-0 mt-1 w-64 bg-white shadow-lg rounded-md py-2 z-10 max-h-96 overflow-y-auto">
                   {productCategories.conveyors.map((item) => (
-                    <Link key={item.id} href={`/conveyors#${item.id}`} className="block px-4 py-2 hover:bg-gray-100">
+                    <Link
+                      key={item.id}
+                      href={`/#conveyors-${item.id}`}
+                      className="block px-4 py-2 hover:bg-gray-100"
+                      onClick={() => setShowDropdown(null)}
+                    >
                       {item.name}
                     </Link>
                   ))}
@@ -151,7 +185,12 @@ export default function MainNav() {
               {showDropdown === "furniture" && (
                 <div className="absolute left-0 mt-1 w-64 bg-white shadow-lg rounded-md py-2 z-10 max-h-96 overflow-y-auto">
                   {productCategories.furniture.map((item) => (
-                    <Link key={item.id} href={`/furniture#${item.id}`} className="block px-4 py-2 hover:bg-gray-100">
+                    <Link
+                      key={item.id}
+                      href={`/#furniture-${item.id}`}
+                      className="block px-4 py-2 hover:bg-gray-100"
+                      onClick={() => setShowDropdown(null)}
+                    >
                       {item.name}
                     </Link>
                   ))}
@@ -171,7 +210,12 @@ export default function MainNav() {
               {showDropdown === "racking" && (
                 <div className="absolute left-0 mt-1 w-64 bg-white shadow-lg rounded-md py-2 z-10">
                   {productCategories.racking.map((item) => (
-                    <Link key={item.id} href={`/racking#${item.id}`} className="block px-4 py-2 hover:bg-gray-100">
+                    <Link
+                      key={item.id}
+                      href={`/#racking-${item.id}`}
+                      className="block px-4 py-2 hover:bg-gray-100"
+                      onClick={() => setShowDropdown(null)}
+                    >
                       {item.name}
                     </Link>
                   ))}
@@ -191,7 +235,12 @@ export default function MainNav() {
               {showDropdown === "trolleys" && (
                 <div className="absolute left-0 mt-1 w-64 bg-white shadow-lg rounded-md py-2 z-10">
                   {productCategories.trolleys.map((item) => (
-                    <Link key={item.id} href={`/trolleys#${item.id}`} className="block px-4 py-2 hover:bg-gray-100">
+                    <Link
+                      key={item.id}
+                      href={`/#trolleys-${item.id}`}
+                      className="block px-4 py-2 hover:bg-gray-100"
+                      onClick={() => setShowDropdown(null)}
+                    >
                       {item.name}
                     </Link>
                   ))}
@@ -199,16 +248,16 @@ export default function MainNav() {
               )}
             </div>
 
-            <Link href="#clients" className="px-2 py-2 hover:text-gray-900 font-medium">
+            <Link href="/#clients" className="px-2 py-2 hover:text-gray-900 font-medium">
               Clients
             </Link>
-            <Link href="#contact" className="px-2 py-2 hover:text-gray-900 font-medium">
+            <Link href="/#contact" className="px-2 py-2 hover:text-gray-900 font-medium">
               Contact Us
             </Link>
           </nav>
 
-          {/* Search and Mobile Menu Button */}
-          <div className="flex items-center ml-auto">
+          {/* Search and Mobile Menu Button - Flex container with space-between */}
+          <div className="flex items-center ml-auto space-x-2">
             {/* Desktop Search */}
             <div className="hidden lg:flex relative">
               <div className="flex items-center border rounded-full px-3 py-1">
@@ -239,13 +288,13 @@ export default function MainNav() {
               )}
             </div>
 
-            {/* Mobile Search */}
-            <div className="lg:hidden relative mr-2">
-              <div className="flex items-center border rounded-full px-3 py-1">
+            {/* Mobile Search - Reduced width */}
+            <div className="lg:hidden relative flex-shrink">
+              <div className="flex items-center border rounded-full px-2 py-1">
                 <input
                   type="text"
                   placeholder="Search"
-                  className="outline-none w-20 text-sm"
+                  className="outline-none w-16 text-sm"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSearch()}
@@ -269,9 +318,9 @@ export default function MainNav() {
               )}
             </div>
 
-            {/* Mobile menu button */}
+            {/* Mobile menu button - Ensure it's visible */}
             <button
-              className="lg:hidden p-2 rounded-md text-gray-700 hover:text-gray-900 focus:outline-none"
+              className="lg:hidden p-2 rounded-md text-gray-700 hover:text-gray-900 focus:outline-none flex-shrink-0"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -285,14 +334,14 @@ export default function MainNav() {
           <div className="lg:hidden py-4 border-t">
             <nav className="flex flex-col space-y-2">
               <Link
-                href="#home"
+                href="/#home"
                 className="px-3 py-2 hover:bg-gray-100 rounded-md"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Home
               </Link>
               <Link
-                href="#about"
+                href="/#about"
                 className="px-3 py-2 hover:bg-gray-100 rounded-md"
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -305,7 +354,7 @@ export default function MainNav() {
                   {productCategories.conveyors.map((item) => (
                     <Link
                       key={item.id}
-                      href={`/conveyors#${item.id}`}
+                      href={`/#conveyors-${item.id}`}
                       className="block px-3 py-1 text-sm hover:bg-gray-100 rounded-md"
                       onClick={() => setIsMenuOpen(false)}
                     >
@@ -321,7 +370,7 @@ export default function MainNav() {
                   {productCategories.furniture.map((item) => (
                     <Link
                       key={item.id}
-                      href={`/furniture#${item.id}`}
+                      href={`/#furniture-${item.id}`}
                       className="block px-3 py-1 text-sm hover:bg-gray-100 rounded-md"
                       onClick={() => setIsMenuOpen(false)}
                     >
@@ -337,7 +386,7 @@ export default function MainNav() {
                   {productCategories.racking.map((item) => (
                     <Link
                       key={item.id}
-                      href={`/racking#${item.id}`}
+                      href={`/#racking-${item.id}`}
                       className="block px-3 py-1 text-sm hover:bg-gray-100 rounded-md"
                       onClick={() => setIsMenuOpen(false)}
                     >
@@ -353,7 +402,7 @@ export default function MainNav() {
                   {productCategories.trolleys.map((item) => (
                     <Link
                       key={item.id}
-                      href={`/trolleys#${item.id}`}
+                      href={`/#trolleys-${item.id}`}
                       className="block px-3 py-1 text-sm hover:bg-gray-100 rounded-md"
                       onClick={() => setIsMenuOpen(false)}
                     >
@@ -364,14 +413,14 @@ export default function MainNav() {
               </div>
 
               <Link
-                href="#clients"
+                href="/#clients"
                 className="px-3 py-2 hover:bg-gray-100 rounded-md"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Clients
               </Link>
               <Link
-                href="#contact"
+                href="/#contact"
                 className="px-3 py-2 hover:bg-gray-100 rounded-md"
                 onClick={() => setIsMenuOpen(false)}
               >

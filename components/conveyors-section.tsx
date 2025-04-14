@@ -1,5 +1,6 @@
 import ProductCarousel from "./product-carousel"
 
+
 const conveyorProducts = [
   {
     id: "loading-conveyor",
