@@ -18,9 +18,9 @@ export default function TopBar() {
             <span>riyanshienterprises13@gmail.com</span>
           </Link>
 
-          <Link href="tel:+917880006141" className="flex items-center hover:text-primary">
+          <Link href="tel:+917880006142" className="flex items-center hover:text-primary">
             <Phone className="h-4 w-4 mr-1" />
-            <span>+91 7880006141</span>
+            <span>+91 7880006142</span>
           </Link>
 
           <Link href="/riyanshicatlogue.pdf" className="flex items-center hover:text-primary">

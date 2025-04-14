@@ -98,8 +98,8 @@ export default function Footer() {
             <ul className="space-y-2 text-gray-400">
               <li>Malku-majra Post-Bhud tehsil- Baddi,H.P., 173205</li>
               <li>
-                <a href="tel:+917880006141" className="hover:text-white">
-                  +91 7880006141
+                <a href="tel:+917880006142" className="hover:text-white">
+                  +91 7880006142
                 </a>
               </li>
               <li>
